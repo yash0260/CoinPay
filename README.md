@@ -4,7 +4,7 @@ A modern, full-stack consumer application for managing credit card bill payments
 
 ## 🔗 Live Links
 - **Frontend (Live Demo)**: [https://coin-pay-zeta.vercel.app](https://coin-pay-zeta.vercel.app)
-- **Backend API**: Deployed on Render
+- **Backend API**: [https://coinpay-jli7.onrender.com/docs](https://coinpay-jli7.onrender.com/docs)
 
 ---
 
