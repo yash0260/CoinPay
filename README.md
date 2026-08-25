@@ -1,139 +1,109 @@
 # CoinPay — Credit Card Bill Payments & Rewards Dashboard
 
-A consumer app for paying credit-card bills, earning reward coins on payments, and analyzing spending. Built as an assignment for **Digital Alpha Technologies**.
+A modern, full-stack consumer application for managing credit card bill payments, earning reward coins, and analyzing spending behavior. This project was developed as a Software Engineering hiring assignment for **Digital Alpha Technologies**.
+
+## 🔗 Live Links
+- **Frontend (Live Demo)**: [https://coin-pay-zeta.vercel.app](https://coin-pay-zeta.vercel.app)
+- **Backend API**: Deployed on Render
+
+---
 
 ## 🏗️ Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
 | **Frontend** | Next.js 15, React 19, TypeScript |
-| **Styling** | Vanilla CSS with design tokens (no component libraries for the table) |
-| **Charts** | Recharts |
+| **Styling** | Vanilla CSS with Design Tokens (No component libraries used) |
+| **Data Visualization** | Recharts |
 | **Backend** | Python, FastAPI |
-| **Database** | PostgreSQL 16+ |
+| **Database** | SQLite (Local) / PostgreSQL (Production) |
 | **ORM** | SQLAlchemy 2.0 |
 
-## ✅ What's Done
+---
 
-### Core (all complete)
-- [x] **Hand-built transaction table** on full 10k rows with server-side pagination, sorting, and filtering
-- [x] **Both spend charts**: Category breakdown (pie/donut) and Monthly trend (bar chart)
-- [x] **One-way chart-to-table filtering** (click a pie slice → filters table)
-- [x] **Two-way cross-filtering** between charts and table filters
-- [x] **Rewards system**: visible coin balance, catalogue of 5 rewards, working redeem flow
-- [x] **Backend validation**: rejects invalid/unaffordable redemptions with proper status codes
-- [x] **PostgreSQL** with designed schema and one-command seed
-- [x] **Optimistic balance update** with clean rollback on failed redeem
-- [x] **Hand-built modal** with focus trap, Escape to close, click outside to close
+## ✨ Key Features
 
-### Frontend Highlights
-- [x] Design token system (CSS custom properties)
-- [x] Reusable component library (Button, Badge, Modal, Spinner, Card)
-- [x] Sticky table header, hover/focus states, sort indicators
-- [x] Loading skeleton, empty state, error state with retry
-- [x] Responsive layout down to 360px
-- [x] Debounced merchant search
-- [x] Multi-select filter dropdowns with active filter chips
-- [x] Transaction detail drawer with full info
-- [x] Staggered animations, smooth transitions
-- [x] Glassmorphism header, gradient accents
+### Frontend Experience
+- **Custom UI Components**: Fully hand-built reusable component library (Modals, Buttons, Badges, Spinners) built from scratch without external component libraries like Material UI or Tailwind.
+- **Advanced Data Table**: A highly performant transaction table handling 10,000+ records via server-side pagination, sorting, and debounced filtering.
+- **Interactive Analytics**: Dynamic spending breakdown charts (Category Pie Chart, Monthly Trend Bar Chart).
+- **Cross-Filtering**: Two-way interactive filtering between charts and the data table (e.g., clicking a pie chart category filters the table).
+- **Modern Aesthetics**: Glassmorphism elements, CSS-variable based design token system, staggered animations, and fully responsive layout (down to 360px).
 
-### Backend Highlights
-- [x] Server-side pagination, filtering, sorting (not shipping all 10k to browser)
-- [x] Proper separation: routes → services → data access
-- [x] Analytics aggregation endpoints (category, monthly)
-- [x] Pessimistic locking on redemption for race condition safety
-- [x] Proper error codes: 400 (insufficient), 404 (not found), 500 (failed)
+### Backend Architecture
+- **Performant API**: FastAPI endpoints optimized for fast data retrieval with server-side pagination and filtering to prevent large payloads.
+- **Robust Rewards Engine**: A transactional rewards system with pessimistic database locking to prevent race conditions during coin redemption.
+- **Data Integrity**: Advanced ETL processing that normalizes mixed timestamp formats, handles timezones appropriately, and sanitizes unstructured category and currency data.
+- **Clean Architecture**: Strong separation of concerns across API routing, business logic services, and data access layers.
 
-### Data Quality Handling
-- [x] 3 timestamp formats normalized (ISO, epoch ms, date-only)
-- [x] Timezone-aware parsing (+05:30 offsets)
-- [x] Null/missing categories → "Uncategorized"
-- [x] String amounts cast to numeric
-- [x] Negative amounts treated as refunds (excluded from coin calc)
-- [x] Duplicate IDs handled with auto-increment PK
-- [x] Outlier amounts capped in coin calculation
+---
 
-## ❌ Not Done / Known Issues
-- [ ] Deployment to cloud (Vercel + Render + Neon)
-- [ ] Automated tests
-- [ ] Accessibility audit (basic a11y is in place)
-- [ ] Dark/light theme toggle
+## 🚀 Local Setup (Under 3 Minutes)
 
-## 🚀 Local Setup (Under 5 Minutes)
+The project is designed to be completely plug-and-play locally using SQLite.
 
 ### Prerequisites
 - Node.js 18+
-- Python 3.10+
-- PostgreSQL 16+ running locally
+- Python 3.12+
 
-### 1. Clone the repo
+### 1. Clone the Repository
 ```bash
-git clone <repo-url>
-cd coinpay
+git clone https://github.com/yash0260/CoinPay.git
+cd CoinPay
 ```
 
 ### 2. Backend Setup
 ```bash
 cd backend
+python -m venv venv
+# Windows: venv\Scripts\activate | Mac/Linux: source venv/bin/activate
 pip install -r requirements.txt
 
-# Create the database
-psql -U postgres -c "CREATE DATABASE coinpay;"
-
-# Copy and edit .env if needed
-cp .env.example .env
-# Edit DATABASE_URL if your Postgres credentials differ
-
-# Seed the database (creates schema + loads all 10k transactions)
+# Seed the database (processes and loads 10,000 records into SQLite)
 python seed.py
-```
 
-### 3. Start the Backend
-```bash
-cd backend
+# Start the server
 uvicorn app.main:app --reload --port 8000
 ```
+The API will be available at `http://localhost:8000/docs` (Swagger UI).
 
-### 4. Frontend Setup
+### 3. Frontend Setup
 ```bash
-cd frontend
+cd ../frontend
 npm install
 npm run dev
 ```
+Visit **[http://localhost:3000](http://localhost:3000)** to view the application.
 
-### 5. Open the app
-Visit [http://localhost:3000](http://localhost:3000)
+---
 
 ## 📁 Project Structure
-```
+
+```text
+CoinPay/
 ├── backend/
 │   ├── app/
-│   │   ├── main.py          # FastAPI entry point
-│   │   ├── config.py        # Environment config
-│   │   ├── database.py      # SQLAlchemy session
-│   │   ├── models.py        # ORM models
-│   │   ├── schemas.py       # Pydantic schemas
-│   │   ├── routes/          # API endpoints
-│   │   └── services/        # Business logic
-│   ├── seed.py              # DB schema + data seed
-│   ├── transactions.json    # Dataset (10k records)
-│   └── requirements.txt
+│   │   ├── main.py          # FastAPI application entry point
+│   │   ├── config.py        # Environment configuration
+│   │   ├── database.py      # SQLAlchemy engine and session management
+│   │   ├── models.py        # Relational database models
+│   │   ├── schemas.py       # Pydantic validation schemas
+│   │   ├── routes/          # API endpoints (Controllers)
+│   │   └── services/        # Business logic and database operations
+│   ├── seed.py              # Data processing and seeding script
+│   └── transactions.json    # Raw dataset (10k records)
 ├── frontend/
 │   ├── src/
-│   │   ├── app/             # Next.js pages
-│   │   ├── components/      # UI components
-│   │   ├── hooks/           # Custom React hooks
-│   │   ├── lib/             # API client, utilities
-│   │   └── styles/          # CSS (tokens, globals, components)
-│   └── .env.local
-├── ASSUMPTIONS.md
-├── DECISIONS.md
-├── AI-USAGE.md
-└── README.md
+│   │   ├── app/             # Next.js App Router pages
+│   │   ├── components/      # Reusable UI components
+│   │   ├── hooks/           # Custom React hooks for state and data fetching
+│   │   ├── lib/             # API client and utility functions
+│   │   └── styles/          # Vanilla CSS architecture (tokens, globals, modules)
+├── ASSUMPTIONS.md           # Business logic and technical assumptions
+├── DECISIONS.md             # Architecture and design decisions
+└── README.md                # Project documentation
 ```
 
-## 🔗 Live URLs
-- Frontend: _Not yet deployed_
-- Backend API: _Not yet deployed_
-- Demo Video: _Link to be added_
+---
+
+*Note: For deeper insights into the technical architecture and choices made during development, please refer to [DECISIONS.md](./DECISIONS.md) and [ASSUMPTIONS.md](./ASSUMPTIONS.md).*
